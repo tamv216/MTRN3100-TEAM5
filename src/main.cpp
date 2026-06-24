@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "Encoder.hpp"
 #include "Motor.hpp"
 #include "PIDController.hpp"
