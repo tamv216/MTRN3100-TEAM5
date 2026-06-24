@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include "Encoder.hpp"
-#include "Motor.hpp"
-#include "PIDController.hpp"
+#include <Encoder.hpp>
+#include <Motor.hpp>
+#include <PIDController.hpp>
 
 #define MOT1PWM 9 // PIN 9 is a PWM pin
 #define MOT1DIR 10
