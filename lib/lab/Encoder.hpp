@@ -9,9 +9,10 @@ namespace mtrn3100 {
 // Encoder pin 1 is attached to the interupt on the arduino and used to trigger the count.
 // Encoder pin 2 is attached to any digital pin and used to derrive rotation direction.
 // The count is stored as a volatile variable due to the high frequency updates. 
+template<uint8_t EN_PIN1, uint8_t EN_PIN2> 
 class Encoder {
 public:
-    Encoder(uint8_t enc1, uint8_t enc2) : encoder1_pin(enc1), encoder2_pin(enc2) {
+    Encoder(): encoder1_pin{EN_PIN1}, encoder2_pin{EN_PIN2} {
         instance = this;  // Store the instance pointer
         pinMode(encoder1_pin, INPUT_PULLUP);
         pinMode(encoder2_pin, INPUT_PULLUP);
@@ -57,6 +58,16 @@ public:
 
       return (2.0f * PI * ((float)count / counts_per_revolution)) * 180 / PI;
     }
+    
+    const uint8_t encoder1_pin;
+    const uint8_t encoder2_pin;
+    volatile int8_t direction;
+    float position = 0;
+    uint16_t counts_per_revolution = 700; //TODO: Identify how many encoder counts are in one rotation
+    volatile long count = 0;
+    uint32_t prev_time;
+    bool read = false;
+
 private:
     static void readEncoderISR() {
         if (instance != nullptr) {
@@ -64,20 +75,10 @@ private:
         }
     }
 
-public:
-    const uint8_t encoder1_pin;
-    const uint8_t encoder2_pin;
-    volatile int8_t direction;
-    float position = 0;
-    uint16_t counts_per_revolution = 4200; //TODO: Identify how many encoder counts are in one rotation
-    volatile long count = 0;
-    uint32_t prev_time;
-    bool read = false;
-
-private:
-    static Encoder* instance;
+    static Encoder<EN_PIN1, EN_PIN2>* instance;
 };
 
-Encoder* Encoder::instance = nullptr;
+template<uint8_t EN_PIN1, uint8_t EN_PIN2>
+Encoder<EN_PIN1, EN_PIN2>* Encoder<EN_PIN1, EN_PIN2>::instance = nullptr;
 
 }  // namespace mtrn3100
