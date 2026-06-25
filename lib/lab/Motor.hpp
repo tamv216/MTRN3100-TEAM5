@@ -29,7 +29,7 @@ public:
       }
 
       // Clamp PWM to 0-255
-      pwm = constrain(pwm, 0, 255);
+      pwm = constrain(pwm, 0, 170);
 
       analogWrite(pwm_pin, pwm);
       // TODO: Output digital direction pin based on if input signal is positive or negative.

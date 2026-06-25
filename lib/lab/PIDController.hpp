@@ -12,17 +12,26 @@ public:
     float compute(float input) {
       
         curr_time = micros();
-        dt = static_cast<float>(curr_time - prev_time) / 1e6;
+        dt = (curr_time - prev_time <= 0) ? 1e-6 : static_cast<float>(curr_time - prev_time) / 1e6;
         prev_time = curr_time;
 
         error = setpoint - (input - zero_ref);
 
         // TODO: IMPLIMENT PID CONTROLLER
         integral += error * dt;
+        // integral = (integral > 1) ? 1 : integral;
         derivative = (error - prev_error) / dt;
         output = (kp * error) + (ki * integral) + (kd * derivative);
-
         prev_error = error;
+
+        // Serial.print(">e:");
+        // Serial.println(kp * error);
+        // Serial.print(">i:");
+        // Serial.println(ki * integral);
+        // Serial.print(">d:");
+        // Serial.println(kd * derivative);
+        // Serial.print(">u:");
+        // Serial.println(output);
 
         return output;
     }
@@ -45,6 +54,10 @@ public:
     void zeroAndSetTarget(float zero, float target) {
         prev_time = micros();
         zero_ref = zero;
+        setpoint = target;
+    }
+
+    void changeTarget(float target) {
         setpoint = target;
     }
 
