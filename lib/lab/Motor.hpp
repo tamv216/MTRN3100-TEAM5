@@ -11,7 +11,7 @@ namespace mtrn3100 {
 // You may choose to impliment additional functionality in the future such as dual motor or speed control 
 class Motor {
 public:
-    Motor( uint8_t pwm_pin, uint8_t in2) :  pwm_pin(pwm_pin), dir_pin(in2) {
+    Motor( uint8_t pwm, uint8_t in2) :  pwm_pin(pwm), dir_pin(in2) {
         // TODO: Set both pins as output
         pinMode(pwm_pin, OUTPUT);
         pinMode(dir_pin, OUTPUT);
