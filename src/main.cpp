@@ -5,7 +5,7 @@
 #include <PIDController.hpp>
 
 #define WHEEL_D 32.0
-#define WHEELBASE 89.0
+#define WHEELBASE 85.0
 
 #define MOT1PWM 11 // PIN 11 is a PWM pin
 #define MOT1DIR 12
@@ -32,8 +32,8 @@ mtrn3100::Encoder<EN_A1, EN_B1> encoderL;
 mtrn3100::Encoder<EN_A2, EN_B2> encoderR;
 
 // mtrn3100::PIDController controllerL(70,8,10);
-mtrn3100::PIDController controllerL(120,20,10);
-mtrn3100::PIDController controllerR(120,20,10);
+mtrn3100::PIDController controllerL(1000, 300, 15);
+mtrn3100::PIDController controllerR(1000, 300, 15);
 
 uint64_t time;
 uint64_t startTime;
@@ -61,7 +61,7 @@ float positionPath(uint64_t time, MotorSide motor) {
   uint64_t t = time - startTime;
   if (t < 2500) return 200;
   if (rotations == 8) return 200;
-  if (t - lastT >= 500) {
+  if (t - lastT >= 1000) {
     rotations++;
     n += dir;
     if (n % 4 == 0) {
@@ -71,15 +71,13 @@ float positionPath(uint64_t time, MotorSide motor) {
   }
 
   float turn = n * headingToDistance(PI/2);
-  Serial.print(">n:");
-  Serial.println(n);
 
   if (motor == Left) return 200 - turn;
   else return 200 + turn;
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   encoderL.resetCount();
   encoderR.resetCount();
   controllerL.zeroAndSetTarget(encoderL.getRotationRadians(), 0);//pL);
@@ -91,12 +89,10 @@ void setup() {
 
 void loop() {
   time = millis();
+  // float pL = distToRad(200);
+  // float pR = distToRad(200);
   float pL = distToRad(positionPath(time, Left));
   float pR = distToRad(positionPath(time, Right));
-  // Serial.print(">left:");
-  // Serial.println(pL);
-  // Serial.print(">right:");
-  // Serial.println(pR);
 
   controllerL.changeTarget(pL);
   controllerR.changeTarget(pR);

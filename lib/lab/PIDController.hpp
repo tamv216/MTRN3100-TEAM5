@@ -19,19 +19,19 @@ public:
 
         // TODO: IMPLIMENT PID CONTROLLER
         integral += error * dt;
-        // integral = (integral > 1) ? 1 : integral;
+        integral = constrain(integral, -170/ki, 170/ki);
         derivative = (error - prev_error) / dt;
         output = (kp * error) + (ki * integral) + (kd * derivative);
         prev_error = error;
 
-        // Serial.print(">e:");
-        // Serial.println(kp * error);
-        // Serial.print(">i:");
-        // Serial.println(ki * integral);
-        // Serial.print(">d:");
-        // Serial.println(kd * derivative);
-        // Serial.print(">u:");
-        // Serial.println(output);
+        Serial.print(">e:");
+        Serial.println(kp * error);
+        Serial.print(">i:");
+        Serial.println(ki * integral);
+        Serial.print(">d:");
+        Serial.println(kd * derivative);
+        Serial.print(">u:");
+        Serial.println(output);
 
         return output;
     }
